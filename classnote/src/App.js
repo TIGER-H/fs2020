@@ -6,23 +6,25 @@ import NotificationMessage from "./Notification";
 
 const Footer = () => {
   const footerStyle = {
-    color: 'green',
-    fontStyle: 'italic',
-    fontSize: 16
-  }
+    color: "green",
+    fontStyle: "italic",
+    fontSize: 16,
+  };
   return (
     <div style={footerStyle}>
       <br />
-      <em>Note app, Department of Computer Science, University of Helsinki 2021</em>
-    </div> 
-  )
-}
+      <em>
+        Note app, Department of Computer Science, University of Helsinki 2021
+      </em>
+    </div>
+  );
+};
 
 const App = () => {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("a new note...");
   const [showAll, setShowAll] = useState(true);
-  const [errorMessage, setErrorMessage] = useState('error happened..')
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
@@ -30,19 +32,24 @@ const App = () => {
     const note = notes.find((n) => n.id === id);
     const changedNote = { ...note, important: !note.important };
 
+    // console.log(changedNote); //now note has been set to oppoite
+
+
     noteService
       .update(id, changedNote)
-      .then((returnedNote) => {
-        setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
-      })
-      .catch((error) => {
-        setErrorMessage(`the note '${note.content}' was already deleted from server!`);
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000);
-        
-        setNotes(notes.filter((note) => note.id !== id));
-      });
+      // .then((returnedNote) => {
+      //   setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
+      // })
+      // .catch((error) => {
+      //   setErrorMessage(
+      //     `the note '${note.content}' was already deleted from server!`
+      //   );
+      //   setTimeout(() => {
+      //     setErrorMessage(null);
+      //   }, 5000);
+
+        // setNotes(notes.filter((note) => note.id !== id));
+      // });
   };
 
   useEffect(() => {

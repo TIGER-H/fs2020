@@ -19,7 +19,7 @@ const App = () => {
     });
   }, []);
 
-  const messageCountDown = (message, error = false, timeout=3000) => {
+  const messageCountDown = (message, error = false, timeout=5000) => {
     error ? setErrMessage(message) : setMessage(message)
     setTimeout(() => {
       error ? setErrMessage(null) : setMessage(null)
@@ -51,11 +51,13 @@ const App = () => {
             setNewName("");
             setNewNumber("");
           })
-          .catch(err => {
-            console.log(err);
-            messageCountDown(`${newName} has already been deleted, plz refresh`, true)
+          .catch(error => {
+            messageCountDown(JSON.stringify(error.response.data), true)
+            // messageCountDown(, true)
           })
       }
+      setNewName('')
+      setNewNumber('')
     } else {
       const nameObject = {
         name: newName,
@@ -69,16 +71,25 @@ const App = () => {
         setNewName("");
         setNewNumber("");
       })
+      .catch(error => {
+        setNewName('')
+        setNewNumber('')
+        messageCountDown(JSON.stringify(error.response.data), true)
+        console.log(error.response.data);
+      })
     }
   };
 
   const toggleDeleteOf = (person) => {
     if (window.confirm(`delete ${person.name} ?`)) {
-      pbService.deleteOne(person.id).then((response) => {
+      pbService
+      .deleteOne(person.id)
+      .then((response) => {
         setPersons(persons.filter((p) => p.id !== person.id));
-      })
+        messageCountDown(`${person.name} has already been deleted`, true)
+      })//what to catch ?
       .catch(err => {
-        messageCountDown(`${person.name} has already been deleted, plz refresh`, true)
+        console.log(err);
       })
     }
   };
