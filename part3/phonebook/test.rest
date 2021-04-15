@@ -1,0 +1,17 @@
+GET http://localhost:3001/api/persons HTTP/1.1
+
+###
+GET http://localhost:3001/api/persons/2 HTTP/1.1
+
+### not working? 
+POST http://localhost:3001/api/persons HTTP/1.1
+Content-Type: : application/json
+
+{
+    "name":"tester1",
+    "number":"63871263"
+}
+
+### 
+DELETE http://localhost:3001/api/persons/6064815cac89347a00a460ab HTTP/1.1
+
