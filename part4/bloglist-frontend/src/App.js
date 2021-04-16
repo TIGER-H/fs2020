@@ -14,6 +14,15 @@ const App = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
   }, [])
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('savedUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -21,8 +30,11 @@ const App = () => {
         username,
         password,
       })
+
       blogService.setToken(user.token)
-      setUser(username)
+      window.localStorage.setItem('savedUser', JSON.stringify(user))
+
+      setUser(user)
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -31,6 +43,12 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('savedUser')
+    blogService.setToken('')
+    setUser(null)
   }
 
   const loginForm = () => (
@@ -64,7 +82,12 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <p>{user} logged in</p>
+      <div>
+        <p>{user.username} logged in</p>
+        <button onClick={handleLogout}>logout</button>
+        {/* 渲染的时候不能是object */}
+      </div>
+
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
