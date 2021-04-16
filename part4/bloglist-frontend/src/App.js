@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import './index.css'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
+  const [message, setMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -41,7 +44,11 @@ const App = () => {
     } catch (exception) {
       console.log(exception.message)
     }
-    
+
+    setMessage('You have created one blog')
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
     setTitle('')
     setAuthor('')
     setUrl('')
@@ -49,7 +56,7 @@ const App = () => {
 
   const addBlogForm = () => (
     <form onSubmit={createBlog}>
-      <h1>create new</h1>
+      <h2>create new</h2>
       <div>
         title:
         <input
@@ -77,7 +84,7 @@ const App = () => {
           onChange={({ target }) => setUrl(target.value)}
         />
       </div>
-      <button type="submit">create</button>
+      <button type='submit'>create</button>
     </form>
   )
 
@@ -92,11 +99,15 @@ const App = () => {
       blogService.setToken(user.token)
       window.localStorage.setItem('savedUser', JSON.stringify(user))
 
+      setMessage('login success')
+      setTimeout(() => {
+        setMessage(null)
+      }, 3000)
       setUser(user)
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('wrong credentials')
+      setErrorMessage('wrong username or password')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -111,7 +122,7 @@ const App = () => {
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
-      <h1>log in to application</h1>
+      <h2>log in to application</h2>
       <div>
         username
         <input
@@ -135,10 +146,17 @@ const App = () => {
   )
 
   if (user === null) {
-    return loginForm()
+    return (
+      <div>
+        <Notification message={errorMessage} err={true} />
+        {loginForm()}
+      </div>
+    )
   }
   return (
     <div>
+      <Notification message={message} />
+      <Notification message={errorMessage} err={true} />
       <h2>blogs</h2>
       <div>
         <p>{user.username} logged in</p>
