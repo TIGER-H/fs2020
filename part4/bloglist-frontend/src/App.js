@@ -10,6 +10,10 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
   }, [])
@@ -22,6 +26,61 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const addBlog = async (newBlog) => {
+    try {
+      const response = await blogService.create(newBlog)
+      setBlogs([...blogs, response])
+    } catch (exception) {
+      console.log(exception.message)
+    }
+  }
+
+  const createBlog = (event) => {
+    event.preventDefault()
+    addBlog({
+      title: title,
+      author: author,
+      url: url,
+    })
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
+  const addBlogForm = () => (
+    <form onSubmit={createBlog}>
+      <h1>create new</h1>
+      <div>
+        title:
+        <input
+          type='text'
+          name='Title'
+          value={title}
+          onChange={({ target }) => setTitle(target.value)}
+        />
+      </div>
+      <div>
+        author:
+        <input
+          type='text'
+          value={author}
+          name='Author'
+          onChange={({ target }) => setAuthor(target.value)}
+        />
+      </div>
+      <div>
+        url:
+        <input
+          type='text'
+          value={url}
+          name='Url'
+          onChange={({ target }) => setUrl(target.value)}
+        />
+      </div>
+      <button type="submit">create</button>
+    </form>
+  )
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -87,6 +146,8 @@ const App = () => {
         <button onClick={handleLogout}>logout</button>
         {/* 渲染的时候不能是object */}
       </div>
+
+      {addBlogForm()}
 
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
