@@ -27,22 +27,21 @@ const App = () => {
     }
   }, [])
 
-  const addBlog = async (newBlog) => {
+  const createBlog = async (event) => {
+    event.preventDefault()
+    const blog = {
+      title: title,
+      author: author,
+      url: url,
+    }
+
     try {
-      const response = await blogService.create(newBlog)
+      const response = await blogService.create(blog)
       setBlogs([...blogs, response])
     } catch (exception) {
       console.log(exception.message)
     }
-  }
-
-  const createBlog = (event) => {
-    event.preventDefault()
-    addBlog({
-      title: title,
-      author: author,
-      url: url,
-    })
+    
     setTitle('')
     setAuthor('')
     setUrl('')
