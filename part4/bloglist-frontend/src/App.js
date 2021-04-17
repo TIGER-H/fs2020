@@ -4,6 +4,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
 import Notification from './components/Notification'
+import AddBlogForm from './components/AddBlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -16,6 +17,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+
+  const [createVisible, setCreateVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -52,41 +55,33 @@ const App = () => {
     setTitle('')
     setAuthor('')
     setUrl('')
+    setCreateVisible(false)
   }
 
-  const addBlogForm = () => (
-    <form onSubmit={createBlog}>
-      <h2>create new</h2>
+  const addBlogForm = () => {
+    const hideWhenVisible = { display: createVisible ? 'none' : '' }
+    const showWhenVisible = { display: createVisible ? '' : 'none' }
+
+    return (
       <div>
-        title:
-        <input
-          type='text'
-          name='Title'
-          value={title}
-          onChange={({ target }) => setTitle(target.value)}
-        />
+        <div style={hideWhenVisible}>
+          <button onClick={() => setCreateVisible(true)}>new note</button>
+        </div>
+        <div style={showWhenVisible}>
+          <AddBlogForm
+            handleSubmit={createBlog}
+            handleTitleChange={({ target }) => setTitle(target.value)}
+            handleAuthorChange={({ target }) => setAuthor(target.value)}
+            handleUrlChange={({ target }) => setUrl(target.value)}
+            title={title}
+            author={author}
+            url={url}
+          />
+          <button onClick={() => setCreateVisible(false)}>cancel</button>
+        </div>
       </div>
-      <div>
-        author:
-        <input
-          type='text'
-          value={author}
-          name='Author'
-          onChange={({ target }) => setAuthor(target.value)}
-        />
-      </div>
-      <div>
-        url:
-        <input
-          type='text'
-          value={url}
-          name='Url'
-          onChange={({ target }) => setUrl(target.value)}
-        />
-      </div>
-      <button type='submit'>create</button>
-    </form>
-  )
+    )
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
