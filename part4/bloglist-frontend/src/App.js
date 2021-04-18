@@ -58,6 +58,18 @@ const App = () => {
     setCreateVisible(false)
   }
 
+  const updateBlog = async (updatedBlog, id) => {
+    try {
+      const response = await blogService.update(updatedBlog, id)
+      setBlogs(await blogService.getAll())
+    } catch (exception) {
+      setErrorMessage(exception.message)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000);
+    }
+  }
+
   const addBlogForm = () => {
     const hideWhenVisible = { display: createVisible ? 'none' : '' }
     const showWhenVisible = { display: createVisible ? '' : 'none' }
@@ -162,7 +174,7 @@ const App = () => {
       {addBlogForm()}
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       ))}
     </div>
   )

@@ -17,25 +17,33 @@ blogRouter.get('/', async (request, response) => {
 
 blogRouter.delete('/:id', async (req, res) => {
   const decodedToken = await jwt.verify(req.token, process.env.SECRET)
-  if (!req.token || !decodedToken.id) { //token没有
+  if (!req.token || !decodedToken.id) {
+    //token没有
     return res.status(401).json({ error: 'token is invalid' })
-  } 
+  }
 
   const user = await User.findById(decodedToken.id)
   const blog = await Blog.findById(req.params.id)
-  if(blog.user.toString() !== user.id.toString()){
-    return res.status(401).json({error: 'user invalid'})
+  if (blog.user.toString() !== user.id.toString()) {
+    return res.status(401).json({ error: 'user invalid' })
   }
   await blog.remove()
-  user.blogs = user.blogs.filter(blog => blog.id.toString() !== req.params.id)
+  user.blogs = user.blogs.filter((blog) => blog.id.toString() !== req.params.id)
   await user.save()
-  
+
   res.status(204).end()
 })
 
 blogRouter.put('/:id', async (req, res) => {
-  const body = req.body
-  const blog = new Note(body)
+  // const body = req.body
+  // const blog = new Blog({
+  //   _id: req.params.id,
+  //   url: body.url,
+  //   title: body.title,
+  //   author: body.author,
+  //   likes: body.likes,
+  // })
+  const blog = req.body
   await Blog.findByIdAndUpdate(req.params.id, blog, { new: true })
   res.json(blog)
 })
@@ -53,7 +61,7 @@ blogRouter.post('/', async (request, response) => {
     url: body.url,
     title: body.title,
     author: body.author,
-    likes: body.likes,
+    likes: body.likes ? body.likes : 0,
     user: user._id,
   })
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlog }) => {
   const [visibility, setVisibility] = useState(false)
 
   const blogStyle = {
@@ -11,7 +11,14 @@ const Blog = ({ blog }) => {
   }
 
   const addLike = () => {
-
+    const updatedBlog = {
+      user: blog.user.id,
+      likes: blog.likes ? blog.likes + 1 : 1,
+      author: blog.author,
+      url: blog.url,
+      title: blog.title,
+    }
+    updateBlog(updatedBlog, blog.id)
   }
 
   return (
@@ -23,12 +30,14 @@ const Blog = ({ blog }) => {
         </button>
       </div>
       <div>
-        {visibility && <div>
-          {blog.url} <br/>
-          {blog.likes} 
-          <button onClick={addLike}>like</button> <br/>
-          {blog.user.name}
-        </div> }
+        {visibility && (
+          <div>
+            {blog.url} <br />
+            {blog.likes}
+            <button onClick={addLike}>like</button> <br />
+            {blog.user.name}
+          </div>
+        )}
       </div>
     </div>
   )
