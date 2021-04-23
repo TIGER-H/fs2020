@@ -43,7 +43,8 @@ const App = () => {
 
     try {
       const response = await blogService.create(blog)
-      setBlogs([...blogs, response])
+      // setBlogs([...blogs, response])
+      setBlogs(await blogService.getAll())
     } catch (exception) {
       console.log(exception.message)
     }
@@ -60,7 +61,19 @@ const App = () => {
 
   const updateBlog = async (updatedBlog, id) => {
     try {
-      const response = await blogService.update(updatedBlog, id)
+      await blogService.update(updatedBlog, id)
+      setBlogs(await blogService.getAll())
+    } catch (exception) {
+      setErrorMessage(exception.message)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000);
+    }
+  }
+
+  const deleteBlog = async(id) => {
+    try {
+      await blogService.deleteOne(id)
       setBlogs(await blogService.getAll())
     } catch (exception) {
       setErrorMessage(exception.message)
@@ -174,7 +187,7 @@ const App = () => {
       {addBlogForm()}
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+        <Blog key={blog.id} blog={blog} user={user} updateBlog={updateBlog} deleteBlog={deleteBlog} />
       ))}
     </div>
   )
