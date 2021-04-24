@@ -2,23 +2,17 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import './index.css'
 import Notification from './components/Notification'
-import AddBlogForm from './components/AddBlogForm'
+import CreateBlog from './components/CreateBlog'
+import LoginForm from './components/loginform'
+import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+
   const [message, setMessage] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
-
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-
-  const [createVisible, setCreateVisible] = useState(false)
+  const [errorMessage, setErrorMessage] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -33,30 +27,42 @@ const App = () => {
     }
   }, [])
 
-  const createBlog = async (event) => {
-    event.preventDefault()
-    const blog = {
-      title: title,
-      author: author,
-      url: url,
-    }
-
-    try {
-      const response = await blogService.create(blog)
-      // setBlogs([...blogs, response])
-      setBlogs(await blogService.getAll())
-    } catch (exception) {
-      console.log(exception.message)
-    }
-
-    setMessage('You have created one blog')
+  const noti = (message, err = false) => {
+    if (err) setErrorMessage(true)
+    setMessage(message)
     setTimeout(() => {
       setMessage(null)
     }, 5000)
-    setTitle('')
-    setAuthor('')
-    setUrl('')
-    setCreateVisible(false)
+  }
+
+  const handleLogin = async (credentials) => {
+    try {
+      const user = await loginService.login(credentials)
+      window.localStorage.setItem('savedUser', JSON.stringify(user))
+      setUser(user)
+      blogService.setToken(user.token)
+      noti('login success')
+    } catch (err) {
+      noti('wrong username/password', true)
+    }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('savedUser')
+    blogService.setToken('')
+    setUser(null)
+    noti('logged out success')
+  }
+
+  const createBlog = async (newBlog) => {
+    try {
+      const response = await blogService.create(newBlog)
+      // setBlogs([...blogs, response])
+      setBlogs(await blogService.getAll())
+      noti(`${response.title} by ${response.author} has been created!`)
+    } catch (error) {
+      noti(error.message, true)
+    }
   }
 
   const updateBlog = async (updatedBlog, id) => {
@@ -67,11 +73,11 @@ const App = () => {
       setErrorMessage(exception.message)
       setTimeout(() => {
         setErrorMessage(null)
-      }, 5000);
+      }, 5000)
     }
   }
 
-  const deleteBlog = async(id) => {
+  const deleteBlog = async (id) => {
     try {
       await blogService.deleteOne(id)
       setBlogs(await blogService.getAll())
@@ -79,116 +85,37 @@ const App = () => {
       setErrorMessage(exception.message)
       setTimeout(() => {
         setErrorMessage(null)
-      }, 5000);
-    }
-  }
-
-  const addBlogForm = () => {
-    const hideWhenVisible = { display: createVisible ? 'none' : '' }
-    const showWhenVisible = { display: createVisible ? '' : 'none' }
-
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setCreateVisible(true)}>new note</button>
-        </div>
-        <div style={showWhenVisible}>
-          <AddBlogForm
-            handleSubmit={createBlog}
-            handleTitleChange={({ target }) => setTitle(target.value)}
-            handleAuthorChange={({ target }) => setAuthor(target.value)}
-            handleUrlChange={({ target }) => setUrl(target.value)}
-            title={title}
-            author={author}
-            url={url}
-          />
-          <button onClick={() => setCreateVisible(false)}>cancel</button>
-        </div>
-      </div>
-    )
-  }
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({
-        username,
-        password,
-      })
-
-      blogService.setToken(user.token)
-      window.localStorage.setItem('savedUser', JSON.stringify(user))
-
-      setMessage('login success')
-      setTimeout(() => {
-        setMessage(null)
-      }, 3000)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      setErrorMessage('wrong username or password')
-      setTimeout(() => {
-        setErrorMessage(null)
       }, 5000)
     }
   }
 
-  const handleLogout = () => {
-    window.localStorage.removeItem('savedUser')
-    blogService.setToken('')
-    setUser(null)
-  }
-
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <h2>log in to application</h2>
-      <div>
-        username
-        <input
-          type='text'
-          value={username}
-          name='Username'
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type='password'
-          name='Password'
-          value={password}
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type='submit'>login</button>
-    </form>
-  )
-
-  if (user === null) {
-    return (
-      <div>
-        <Notification message={errorMessage} err={true} />
-        {loginForm()}
-      </div>
-    )
-  }
   return (
     <div>
-      <Notification message={message} />
-      <Notification message={errorMessage} err={true} />
+      {message && <Notification message={message} error={errorMessage} />}
       <h2>blogs</h2>
-      <div>
-        <p>{user.username} logged in</p>
-        <button onClick={handleLogout}>logout</button>
-        {/* 渲染的时候不能是object */}
-      </div>
+      {!user ? (
+        <LoginForm login={handleLogin} />
+      ) : (
+        <div>
+          <div>
+            <p>{user.username} logged in</p>
+            <button onClick={handleLogout}>logout</button>
+            {/* 渲染的时候不能是object */}
+          </div>
 
-      {addBlogForm()}
+          <CreateBlog addBlog = {createBlog} />
 
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} user={user} updateBlog={updateBlog} deleteBlog={deleteBlog} />
-      ))}
+          {blogs.map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              user={user}
+              updateBlog={updateBlog}
+              deleteBlog={deleteBlog}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
