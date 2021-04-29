@@ -1,15 +1,3 @@
-const getId = () => (100000 * Math.random()).toFixed(0)
-
-const asObject = (anecdote) => {
-  return {
-    content: anecdote,
-    id: getId(),
-    votes: 0,
-  }
-}
-
-// const initialState = anecdoteService.getAll()
-
 const reducer = (state = [], action) => {
   console.log('state now: ', state)
   console.log('action', action)
@@ -42,13 +30,9 @@ export const newVote = (id) => ({
   data: { id: id },
 })
 
-export const newAnecdote = (content) => ({
+export const newAnecdote = (data) => ({
   type: 'NEW_ANECDOTE',
-  data: {
-    content: content,
-    id: getId(),
-    votes: 0,
-  },
+  data
 })
 
 export const initialAnecdotes = (anecdotes) => {
