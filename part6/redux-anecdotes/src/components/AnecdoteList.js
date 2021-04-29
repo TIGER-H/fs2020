@@ -8,7 +8,8 @@ const AnecdoteList = () => {
   const dispatch = useDispatch()
 
   const vote = (anecdote) => {
-    dispatch(newVote(anecdote.id))
+    const votedAnecdote = { ...anecdote, votes: anecdote.votes + 1 }
+    dispatch(newVote(anecdote.id, votedAnecdote))
     dispatch(show(`You voted ${anecdote.content}`))
     setTimeout(() => {
       dispatch(hide())

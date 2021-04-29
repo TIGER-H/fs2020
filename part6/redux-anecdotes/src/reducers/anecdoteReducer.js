@@ -27,10 +27,15 @@ const reducer = (state = [], action) => {
   }
 }
 
-export const newVote = (id) => ({
-  type: 'VOTE',
-  data: { id: id },
-})
+export const newVote = (id, votedAnecdote) => {
+  return async dispatch => {
+    const newAnecdote = await anecdoteService.updateAnecdote(votedAnecdote)
+    dispatch({
+      type: 'VOTE',
+      data: { id: id },
+    })
+  }
+}
 
 export const newAnecdote = (content) => {
   return async dispatch => {
