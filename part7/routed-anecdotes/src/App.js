@@ -1,5 +1,12 @@
 import React, { useState } from 'react'
-import { Switch, Route, Link, useRouteMatch, useHistory } from 'react-router-dom'
+import {
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+  useHistory,
+} from 'react-router-dom'
+import { useField } from './hooks'
 
 const Menu = () => {
   const padding = {
@@ -83,18 +90,18 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const content = useField('text')
+  const author = useField('text')
+  const info = useField('text')
 
   const history = useHistory()
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.input.value,
+      author: author.input.value,
+      info: info.input.value,
       votes: 0,
     })
     history.push('/')
@@ -106,35 +113,33 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input
-            name='content'
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          <input {...content.input} />
         </div>
         <div>
           author
-          <input
-            name='author'
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
+          <input {...author.input} />
         </div>
         <div>
           url for more info
-          <input
-            name='info'
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
-          />
+          <input {...info.input} />
         </div>
         <button>create</button>
+        <button
+          type='button'
+          onClick={() => {
+            content.reset()
+            author.reset()
+            info.reset()
+          }}
+        >
+          reset
+        </button>
       </form>
     </div>
   )
 }
 
-const Notification = ({message}) => {
+const Notification = ({ message }) => {
   if (!message) return null
   return <div>{message}</div>
 }
@@ -165,7 +170,7 @@ const App = () => {
     setNotification(`a new anecdote ${anecdote.content} created!`)
     setTimeout(() => {
       setNotification('')
-    }, 10*1000)
+    }, 10 * 1000)
   }
 
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id)
