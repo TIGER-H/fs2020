@@ -6,13 +6,14 @@ import Notification from './components/Notification'
 import CreateBlog from './components/CreateBlog'
 import LoginForm from './components/loginform'
 import './index.css'
+import { useDispatch } from 'react-redux'
+import { show } from './reducer/notificationReducer'
 
 const App = () => {
+  const dispatch = useDispatch()
+
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-
-  const [message, setMessage] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -27,23 +28,17 @@ const App = () => {
     }
   }, [])
 
-  const noti = (message, err = false) => {
-    if (err) setErrorMessage(true)
-    setMessage(message)
-    setTimeout(() => {
-      setMessage(null)
-    }, 5000)
-  }
-
   const handleLogin = async (credentials) => {
     try {
       const user = await loginService.login(credentials)
       window.localStorage.setItem('savedUser', JSON.stringify(user))
       setUser(user)
       blogService.setToken(user.token)
-      noti('login success')
+      // noti('login success')
+      dispatch(show('login success'))
     } catch (err) {
-      noti('wrong username/password', true)
+      // noti('wrong username/password', true)
+      dispatch(show('wrong username/password', true))
     }
   }
 
@@ -51,7 +46,8 @@ const App = () => {
     window.localStorage.removeItem('savedUser')
     blogService.setToken('')
     setUser(null)
-    noti('logged out success')
+    // noti('logged out success')
+    dispatch(show('logged out success'))
   }
 
   const createBlog = async (newBlog) => {
@@ -59,9 +55,13 @@ const App = () => {
       const response = await blogService.create(newBlog)
       // setBlogs([...blogs, response])
       setBlogs(await blogService.getAll())
-      noti(`${response.title} by ${response.author} has been created!`)
+      // noti(`${response.title} by ${response.author} has been created!`)
+      dispatch(
+        show(`${response.title} by ${response.author} has been created!`)
+      )
     } catch (error) {
-      noti(error.message, true)
+      // noti(error.message, true)
+      dispatch(show(error.message, true))
     }
   }
 
@@ -69,29 +69,26 @@ const App = () => {
     try {
       await blogService.update(updatedBlog, id)
       setBlogs(await blogService.getAll())
-    } catch (exception) {
-      setErrorMessage(exception.message)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+    } catch (error) {
+      // noti(exception.message, true)
+      dispatch(show(error.message, true))
     }
   }
 
-  const deleteBlog = async (id) => {
+  const deleteBlog = async (blog) => {
     try {
-      await blogService.deleteOne(id)
-      setBlogs(await blogService.getAll())
-    } catch (exception) {
-      setErrorMessage(exception.message)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      await blogService.deleteOne(blog.id)
+      setBlogs(blogs.filter(b=>b.id !== blog.id))
+      dispatch(show(`${blog.title} removed!`))
+    } catch (error) {
+      // noti(exception.message, true)
+      dispatch(show(error.message, true))
     }
   }
 
   return (
     <div>
-      {message && <Notification message={message} error={errorMessage} />}
+      <Notification />
       <h2>blogs</h2>
       {!user ? (
         <LoginForm login={handleLogin} />
@@ -103,7 +100,7 @@ const App = () => {
             {/* 渲染的时候不能是object */}
           </div>
 
-          <CreateBlog addBlog = {createBlog} />
+          <CreateBlog addBlog={createBlog} />
 
           {blogs.map((blog) => (
             <Blog
