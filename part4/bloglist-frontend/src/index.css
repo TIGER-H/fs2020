@@ -17,3 +17,19 @@
   padding: 10px;
   margin-bottom: 10px;
 }
+
+.NavBar {
+  color: black;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: none;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.blogNav{
+  padding-right: 10px;
+}
+.usersNav{
+  padding-right: 10px;
+}

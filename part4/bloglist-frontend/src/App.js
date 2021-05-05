@@ -9,9 +9,10 @@ import { initBlogs } from './reducer/blogReducer'
 import { logged, logout } from './reducer/userReducer'
 import Users from './components/users'
 import { initUsers } from './reducer/usersReducer'
-import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom'
+import { Link, Redirect, Route, Switch, useRouteMatch } from 'react-router-dom'
 import User from './components/user'
 import Blog from './components/blog'
+import Navigation from './components/Navigation'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -44,16 +45,12 @@ const App = () => {
   return (
     <div>
       <Notification />
-      <h2>blogs</h2>
+      <Navigation />
+      <h2>blogs app</h2>
       {!user ? (
         <LoginForm />
       ) : (
         <div>
-          <div>
-            <p>{user.username} logged in</p>
-            <button onClick={() => dispatch(logout())}>logout</button>
-            {/* 渲染的时候不能是object */}
-          </div>
           <Switch>
             <Route path='/users/:id'>
               <User user={userToShow} />
@@ -62,7 +59,11 @@ const App = () => {
               <Users />
             </Route>
             <Route path='/blogs/:id'>
-              {blogToShow ? <Blog blog={blogToShow} /> : <Redirect to='/blogs' />}
+              {blogToShow ? (
+                <Blog blog={blogToShow} />
+              ) : (
+                <Redirect to='/blogs' />
+              )}
             </Route>
             <Route path='/'>
               <CreateBlog />
