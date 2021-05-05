@@ -1,30 +1,10 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { deleteBLog, updateBlog } from '../reducer/blogReducer'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
   const dispatch = useDispatch()
-
-  const [visibility, setVisibility] = useState(false)
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
-  const addLike = () => {
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-    }
-    // updateBlog(updatedBlog, blog.id)
-    console.log(updatedBlog);
-    dispatch(updateBlog(updatedBlog))
-  }
+  const user = useSelector((state) => state.user)
+  if (!blog) return null
 
   const handleDelete = () => {
     window.confirm(`Remove ${blog.title} by ${blog.author}?`) &&
@@ -32,33 +12,21 @@ const Blog = ({ blog, user }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <div>
+    <div>
+      <h3>
         {blog.title} {blog.author}
-        <button onClick={() => setVisibility(!visibility)}>
-          {visibility ? 'hide' : 'show'}
-        </button>
-      </div>
-      <div>
-        {visibility && (
-          <div>
-            {blog.url} <br />
-            {blog.likes}
-            <button onClick={addLike}>like</button> <br />
-            {blog.user.name} <br />
-            {blog.user.username === user.username && (
-              <button onClick={handleDelete}>remove</button>
-            )}
-          </div>
-        )}
-      </div>
+      </h3>
+      <a href={blog.url}>{blog.url}</a>
+      <p>
+        {blog.likes} {blog.likes === 0 ? 'like' : 'likes'}
+        <button onClick={() => dispatch(updateBlog(blog))}>like</button>
+      </p>
+
+      <p>added by {blog.user.name}</p>
+      {user.name === blog.user.name && (
+        <button onClick={handleDelete}>remove</button>
+      )}
     </div>
   )
 }
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
-}
-
 export default Blog
