@@ -7,27 +7,26 @@ import './index.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { initBlogs } from './reducer/blogReducer'
 import { logged, logout } from './reducer/userReducer'
+import Users from './components/users'
+import { initUsers } from './reducer/usersReducer'
+import { Route, Switch } from 'react-router-dom'
 
 const App = () => {
   const dispatch = useDispatch()
 
-  // const [blogs, setBlogs] = useState([])
   const blogs = useSelector((state) => state.blogs)
-  // const [user, setUser] = useState(null)
   const user = useSelector((state) => state.user)
 
   useEffect(() => {
     // blogService.getAll().then((blogs) => setBlogs(blogs))
     dispatch(initBlogs())
-  }, [dispatch])
-
-  useEffect(() => {
+    dispatch(initUsers())
     const loggedUserJSON = window.localStorage.getItem('savedUser')
     if (loggedUserJSON) {
       const loggeduser = JSON.parse(loggedUserJSON)
       dispatch(logged(loggeduser))
     }
-  }, [])
+  }, [dispatch])
 
   return (
     <div>
@@ -42,12 +41,18 @@ const App = () => {
             <button onClick={() => dispatch(logout())}>logout</button>
             {/* 渲染的时候不能是object */}
           </div>
+          <Switch>
+            <Route path='/users'>
+              <Users />
+            </Route>
+            <Route path='/'>
+              <CreateBlog />
 
-          <CreateBlog />
-
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} user={user} />
-          ))}
+              {blogs.map((blog) => (
+                <Blog key={blog.id} blog={blog} user={user} />
+              ))}
+            </Route>
+          </Switch>
         </div>
       )}
     </div>
