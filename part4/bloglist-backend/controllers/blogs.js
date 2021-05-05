@@ -1,7 +1,7 @@
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const jwt = require('jsonwebtoken') 
+const jwt = require('jsonwebtoken')
 
 blogRouter.get('/', async (request, response) => {
   // Blog.find({}).then((blogs) => {
@@ -34,10 +34,7 @@ blogRouter.post('/', async (request, response) => {
 
   const user = await User.findById(decodedToken.id)
   const blog = new Blog({
-    url: body.url,
-    title: body.title,
-    author: body.author,
-    likes: body.likes ? body.likes : 0,
+    ...body,
     user: user._id,
   })
 
@@ -46,6 +43,17 @@ blogRouter.post('/', async (request, response) => {
   await user.save()
 
   response.json(savedBlog)
+})
+
+blogRouter.post('/:id/comments', async (request, response) => {
+  const comment = request.body.comment
+  const updated = await Blog.findById(request.params.id).populate('user', {
+    username: 1,
+    name: 1,
+  })
+  updated.comments = [...updated.comments, comment]
+  updated.save()
+  response.status(200).json(updated)
 })
 
 blogRouter.delete('/:id', async (req, res) => {
@@ -74,9 +82,8 @@ blogRouter.put('/:id', async (req, res) => {
     new: true,
   })
   // const updatedBlog = await Blog.findById(req.params.id).populate('user', {username:1, name:1}) // check
-  console.log(updatedBlog);
+  console.log(updatedBlog)
   res.json(updatedBlog)
 })
-
 
 module.exports = blogRouter

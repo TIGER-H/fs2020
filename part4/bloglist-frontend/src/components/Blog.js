@@ -26,6 +26,11 @@ const Blog = ({ blog }) => {
       {user.name === blog.user.name && (
         <button onClick={handleDelete}>remove</button>
       )}
+      <br />
+      <b>comments</b>
+      {blog.comments.map((comment, i) => (
+        <li key={i}>{comment}</li>
+      ))}
     </div>
   )
 }
