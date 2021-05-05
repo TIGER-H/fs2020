@@ -18,11 +18,6 @@ const Blog = ({ blog, user }) => {
 
   const addLike = () => {
     const updatedBlog = {
-      // user: blog.user.id,
-      // likes: blog.likes ? blog.likes + 1 : 1,
-      // author: blog.author,
-      // url: blog.url,
-      // title: blog.title,
       ...blog,
       likes: blog.likes + 1,
     }

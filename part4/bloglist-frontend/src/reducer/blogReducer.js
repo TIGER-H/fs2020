@@ -4,10 +4,11 @@ const blogReducer = (state = [], action) => {
   switch (action.type) {
     case 'INIT':
       return action.data
-    case 'CREATE':{
-      return [...state, action.data]
+    case 'CREATE': {
+      // return [...state, action.data]
       // return state.concat(action.data)
-    }   
+      return action.newState
+    }
     case 'UPDATE': {
       return state.map((blog) =>
         blog.id !== action.data.id ? blog : action.data
@@ -34,22 +35,17 @@ export const initBlogs = () => {
 
 export const createBlog = (content) => {
   return async (dispatch) => {
-    const data = await blogService.create(content)
+    await blogService.create(content)
+    const newState = await blogService.getAll()
     dispatch({
       type: 'CREATE',
-      data,
+      newState,
     })
   }
 }
 
 export const updateBlog = (blog) => {
   return async (dispatch) => {
-    // const data = await blogService.update({
-    //   ...content,
-    //   user: content.user.id,
-    //   likes: content.likes + 1,
-    // })
-    // console.log(blog);
     const data = await blogService.update(blog)
     dispatch({
       type: 'UPDATE',
