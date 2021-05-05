@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { createBlog } from '../reducer/blogReducer'
+import { useDispatch } from 'react-redux'
 
-const CreateBlog = ({ addBlog }) => {
+const CreateBlog = () => {
+  const dispatch = useDispatch()
+  
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -11,13 +15,15 @@ const CreateBlog = ({ addBlog }) => {
   const hideWhenVisible = { display: createVisible ? 'none' : '' }
   const showWhenVisible = { display: createVisible ? '' : 'none' }
 
-  const createBlog = (event) => {
+  const addBlog = (event) => {
     event.preventDefault()
-    addBlog({
-      title: title,
-      author: author,
-      url: url,
-    })
+    dispatch(
+      createBlog({
+        title: title,
+        author: author,
+        url: url,
+      })
+    )
     setTitle('')
     setAuthor('')
     setUrl('')
@@ -26,10 +32,10 @@ const CreateBlog = ({ addBlog }) => {
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button onClick={() => setCreateVisible(true)}>new note</button>
+        <button onClick={() => setCreateVisible(true)}>new blog</button>
       </div>
       <div style={showWhenVisible}>
-        <form onSubmit={createBlog}>
+        <form onSubmit={addBlog}>
           <h2>create new</h2>
           <div>
             title:
@@ -69,8 +75,8 @@ const CreateBlog = ({ addBlog }) => {
   )
 }
 
-CreateBlog.propTypes = {
-  addBlog: PropTypes.func.isRequired,
-}
+// CreateBlog.propTypes = {
+//   addBlog: PropTypes.func.isRequired,
+// }
 
 export default CreateBlog

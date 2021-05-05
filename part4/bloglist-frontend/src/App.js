@@ -6,18 +6,21 @@ import Notification from './components/Notification'
 import CreateBlog from './components/CreateBlog'
 import LoginForm from './components/loginform'
 import './index.css'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { show } from './reducer/notificationReducer'
+import { addBlog, initBlogs } from './reducer/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
 
-  const [blogs, setBlogs] = useState([])
+  // const [blogs, setBlogs] = useState([])
+  const blogs = useSelector((state) => state.blogs)
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+    // blogService.getAll().then((blogs) => setBlogs(blogs))
+    dispatch(initBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('savedUser')
@@ -50,25 +53,10 @@ const App = () => {
     dispatch(show('logged out success'))
   }
 
-  const createBlog = async (newBlog) => {
-    try {
-      const response = await blogService.create(newBlog)
-      // setBlogs([...blogs, response])
-      setBlogs(await blogService.getAll())
-      // noti(`${response.title} by ${response.author} has been created!`)
-      dispatch(
-        show(`${response.title} by ${response.author} has been created!`)
-      )
-    } catch (error) {
-      // noti(error.message, true)
-      dispatch(show(error.message, true))
-    }
-  }
-
   const updateBlog = async (updatedBlog, id) => {
     try {
       await blogService.update(updatedBlog, id)
-      setBlogs(await blogService.getAll())
+      // setBlogs(await blogService.getAll())
     } catch (error) {
       // noti(exception.message, true)
       dispatch(show(error.message, true))
@@ -78,7 +66,8 @@ const App = () => {
   const deleteBlog = async (blog) => {
     try {
       await blogService.deleteOne(blog.id)
-      setBlogs(blogs.filter(b=>b.id !== blog.id))
+      // setBlogs(blogs.filter(b=>b.id !== blog.id))
+
       dispatch(show(`${blog.title} removed!`))
     } catch (error) {
       // noti(exception.message, true)
@@ -100,16 +89,10 @@ const App = () => {
             {/* 渲染的时候不能是object */}
           </div>
 
-          <CreateBlog addBlog={createBlog} />
+          <CreateBlog />
 
           {blogs.map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              user={user}
-              updateBlog={updateBlog}
-              deleteBlog={deleteBlog}
-            />
+            <Blog key={blog.id} blog={blog} user={user} />
           ))}
         </div>
       )}

@@ -1,7 +1,7 @@
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken') 
 
 blogRouter.get('/', async (request, response) => {
   // Blog.find({}).then((blogs) => {
@@ -10,41 +10,17 @@ blogRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', {
     username: 1,
     name: 1,
-    id: 1,
+    // id: 1,
   })
   response.json(blogs)
 })
 
-blogRouter.delete('/:id', async (req, res) => {
-  const decodedToken = await jwt.verify(req.token, process.env.SECRET)
-  if (!req.token || !decodedToken.id) {
-    //token没有
-    return res.status(401).json({ error: 'token is invalid' })
-  }
-
-  const user = await User.findById(decodedToken.id)
-  const blog = await Blog.findById(req.params.id)
-  if (blog.user.toString() !== user.id.toString()) {
-    return res.status(401).json({ error: 'user invalid' })
-  }
-  await blog.remove()
-  user.blogs = user.blogs.filter((blog) => blog.id.toString() !== req.params.id)
-  await user.save()
-
-  res.status(204).end()
-})
-
-blogRouter.put('/:id', async (req, res) => {
-  // const body = req.body
-  // const blog = new Blog({
-  //   _id: req.params.id,
-  //   url: body.url,
-  //   title: body.title,
-  //   author: body.author,
-  //   likes: body.likes,
-  // })
-  const blog = req.body
-  await Blog.findByIdAndUpdate(req.params.id, blog, { new: true })
+blogRouter.get('/:id', async (req, res) => {
+  const blog = await Blog.findById(req.params.id).populate('user', {
+    username: 1,
+    name: 1,
+  })
+  if (!blog) return res.status(404).send('not found')
   res.json(blog)
 })
 
@@ -71,5 +47,36 @@ blogRouter.post('/', async (request, response) => {
 
   response.json(savedBlog)
 })
+
+blogRouter.delete('/:id', async (req, res) => {
+  const decodedToken = await jwt.verify(req.token, process.env.SECRET)
+  if (!req.token || !decodedToken.id) {
+    //token没有
+    return res.status(401).json({ error: 'token is invalid' })
+  }
+
+  const user = await User.findById(decodedToken.id)
+  const blog = await Blog.findById(req.params.id)
+  if (blog.user.toString() !== user.id.toString()) {
+    return res.status(401).json({ error: 'user invalid' })
+  }
+  await blog.remove()
+  user.blogs = user.blogs.filter((blog) => blog.id.toString() !== req.params.id)
+  await user.save()
+
+  res.status(204).end()
+})
+
+blogRouter.put('/:id', async (req, res) => {
+  const blog = req.body
+  // console.log(blog);
+  const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, {
+    new: true,
+  })
+  // const updatedBlog = await Blog.findById(req.params.id).populate('user', {username:1, name:1}) // check
+  console.log(updatedBlog);
+  res.json(updatedBlog)
+})
+
 
 module.exports = blogRouter
