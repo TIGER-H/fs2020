@@ -9,13 +9,21 @@ import { initBlogs } from './reducer/blogReducer'
 import { logged, logout } from './reducer/userReducer'
 import Users from './components/users'
 import { initUsers } from './reducer/usersReducer'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, useRouteMatch } from 'react-router-dom'
+import User from './components/user'
 
 const App = () => {
   const dispatch = useDispatch()
 
   const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
+  const users = useSelector((state) => state.users)
+
+  const matchUser = useRouteMatch('/users/:id')
+  const userToShow = matchUser
+    ? users.find((u) => u.id === (matchUser.params.id))
+    : null
+
 
   useEffect(() => {
     // blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -42,6 +50,9 @@ const App = () => {
             {/* 渲染的时候不能是object */}
           </div>
           <Switch>
+            <Route path='/users/:id'>
+              <User user={userToShow} />
+            </Route>
             <Route path='/users'>
               <Users />
             </Route>
