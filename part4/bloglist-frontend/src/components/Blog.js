@@ -1,14 +1,22 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteBLog, updateBlog } from '../reducer/blogReducer'
+import { useField } from '../hooks/hooks'
+import { addComment, deleteBLog, updateBlog } from '../reducer/blogReducer'
 
 const Blog = ({ blog }) => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
+  const newComment = useField('text')
   if (!blog) return null
 
   const handleDelete = () => {
     window.confirm(`Remove ${blog.title} by ${blog.author}?`) &&
       dispatch(deleteBLog(blog))
+  }
+
+  const handleComment = (event) => {
+    event.preventDefault()
+    dispatch(addComment(blog.id, newComment.input.value))
+    newComment.reset()
   }
 
   return (
@@ -28,6 +36,10 @@ const Blog = ({ blog }) => {
       )}
       <br />
       <b>comments</b>
+      <form onSubmit={handleComment}>
+        <input {...newComment.input} />
+        <button type='submit'>comment</button>
+      </form>
       {blog.comments.map((comment, i) => (
         <li key={i}>{comment}</li>
       ))}

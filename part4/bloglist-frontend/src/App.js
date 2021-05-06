@@ -11,7 +11,7 @@ import Users from './components/users'
 import { initUsers } from './reducer/usersReducer'
 import { Link, Redirect, Route, Switch, useRouteMatch } from 'react-router-dom'
 import User from './components/user'
-import Blog from './components/blog'
+import Blog from './components/Blog'
 import Navigation from './components/Navigation'
 
 const App = () => {
