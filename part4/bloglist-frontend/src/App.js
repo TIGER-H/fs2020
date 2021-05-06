@@ -13,6 +13,7 @@ import { Link, Redirect, Route, Switch, useRouteMatch } from 'react-router-dom'
 import User from './components/user'
 import Blog from './components/Blog'
 import Navigation from './components/Navigation'
+import { Container } from '@material-ui/core'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -43,39 +44,37 @@ const App = () => {
   }, [dispatch])
 
   return (
-    <div>
-      <Notification />
-      <Navigation />
-      <h2>blogs app</h2>
-      {!user ? (
-        <LoginForm />
-      ) : (
-        <div>
-          <Switch>
-            <Route path='/users/:id'>
-              <User user={userToShow} />
-            </Route>
-            <Route path='/users'>
-              <Users />
-            </Route>
-            <Route path='/blogs/:id'>
-              {blogToShow ? (
-                <Blog blog={blogToShow} />
-              ) : (
-                <Redirect to='/blogs' />
-              )}
-            </Route>
-            <Route path='/'>
-              <CreateBlog />
+    <Container>
+      <div>
+        <Notification />
+        <Navigation />
 
-              {blogs.map((blog) => (
-                <Blogs key={blog.id} blog={blog} user={user} />
-              ))}
-            </Route>
-          </Switch>
-        </div>
-      )}
-    </div>
+        {!user ? (
+          <div>
+            <h1>blogs app</h1>
+            <LoginForm />
+          </div>
+        ) : (
+          <div>
+            <Switch>
+              <Route path='/users/:id'>
+                <User user={userToShow} />
+              </Route>
+              <Route path='/users'>
+                <Users />
+              </Route>
+              <Route path='/blogs/:id'>
+                {blogToShow ? <Blog blog={blogToShow} /> : <Redirect to='/' />}
+              </Route>
+              <Route path='/'>
+                <CreateBlog />
+                <Blogs />
+              </Route>
+            </Switch>
+          </div>
+        )}
+      </div>
+    </Container>
   )
 }
 

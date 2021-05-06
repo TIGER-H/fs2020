@@ -1,44 +1,57 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { deleteBLog, updateBlog } from '../reducer/blogReducer'
 import { Link } from 'react-router-dom'
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from '@material-ui/core'
 
-const Blogs = ({ blog, user }) => {
+const Blogs = () => {
   const dispatch = useDispatch()
+  const blogs = useSelector((state) => state.blogs)
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
-  const addLike = () => {
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-    }
-    // updateBlog(updatedBlog, blog.id)
-    console.log(updatedBlog)
-    dispatch(updateBlog(updatedBlog))
-  }
+  // const addLike = () => {
+  //   const updatedBlog = {
+  //     ...blog,
+  //     likes: blog.likes + 1,
+  //   }
+  //   // updateBlog(updatedBlog, blog.id)
+  //   console.log(updatedBlog)
+  //   dispatch(updateBlog(updatedBlog))
+  // }
 
   return (
-    <div style={blogStyle}>
-      <div>
-        <Link to={`/blogs/${blog.id}`}>
-          {blog.title} {blog.author}
-        </Link>
-      </div>
+    <div>
+      <h2>blogs</h2>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableCell>
+                <b>Title</b>
+              </TableCell>
+              <TableCell>
+                <b>Author</b>
+              </TableCell>
+            </TableRow>
+            {blogs.map((blog) => (
+              <TableRow key={blog.id}>
+                <TableCell>
+                  <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                </TableCell>
+                <TableCell>{blog.author}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   )
-}
-
-Blogs.propTypes = {
-  blog: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
 }
 
 export default Blogs

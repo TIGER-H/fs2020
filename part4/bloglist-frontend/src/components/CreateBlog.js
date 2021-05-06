@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { createBlog } from '../reducer/blogReducer'
 import { useDispatch } from 'react-redux'
 import { useField } from '../hooks/hooks'
+import { Button, TextField } from '@material-ui/core'
 
 const CreateBlog = () => {
   const dispatch = useDispatch()
@@ -23,33 +24,46 @@ const CreateBlog = () => {
         author: author.input.value,
         url: url.input.value,
       })
-    );
-    [title, author, url].map((item) => item.reset())
+    )
+    ;[title, author, url].map((item) => item.reset())
   }
 
   return (
     <div>
+      <br />
       <div style={hideWhenVisible}>
-        <button onClick={() => setCreateVisible(true)}>new blog</button>
+        <Button variant='outlined' onClick={() => setCreateVisible(true)}>
+          new blog
+        </Button>
       </div>
       <div style={showWhenVisible}>
         <form onSubmit={addBlog}>
           <h2>create new</h2>
           <div>
-            title:
-            <input id='title' {...title.input} />
+            <TextField label='title' {...title.input} variant='outlined' />
+            {/* title:
+            <input id='title' {...title.input} /> */}
           </div>
           <div>
-            author:
-            <input id='author' {...author.input} />
+            <TextField label='author' {...author.input} variant='outlined' />
+            {/* author:
+            <input id='author' {...author.input} /> */}
           </div>
           <div>
-            url:
-            <input id='url' {...url.input} />
+            <TextField label='url' {...url.input} variant='outlined' />
+            {/* url:
+            <input id='url' {...url.input} /> */}
           </div>
-          <button type='submit'>create</button>
+          <br />
+          <Button variant='outlined' type='submit'>
+            create
+          </Button>
+          <Button variant='outlined' onClick={() => setCreateVisible(false)}>
+            cancel
+          </Button>
+          <br />
         </form>
-        <button onClick={() => setCreateVisible(false)}>cancel</button>
+        <br />
       </div>
     </div>
   )

@@ -1,3 +1,14 @@
+import {
+  Button,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+} from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
 import { useField } from '../hooks/hooks'
 import { addComment, deleteBLog, updateBlog } from '../reducer/blogReducer'
@@ -21,28 +32,49 @@ const Blog = ({ blog }) => {
 
   return (
     <div>
-      <h3>
-        {blog.title} {blog.author}
-      </h3>
-      <a href={blog.url}>{blog.url}</a>
-      <p>
-        {blog.likes} {blog.likes === 0 ? 'like' : 'likes'}
-        <button onClick={() => dispatch(updateBlog(blog))}>like</button>
-      </p>
+      <Paper>
+        <a href={blog.url}>{blog.url}</a>
 
-      <p>added by {blog.user.name}</p>
-      {user.name === blog.user.name && (
-        <button onClick={handleDelete}>remove</button>
-      )}
-      <br />
+        <p>
+          {blog.likes} {blog.likes === 0 ? 'like' : 'likes'}
+          <Button
+            variant='outlined'
+            size='small'
+            onClick={() => dispatch(updateBlog(blog))}
+          >
+            like
+          </Button>
+        </p>
+
+        <p>added by {blog.user.name}</p>
+
+        {user.name === blog.user.name && (
+          <Button onClick={handleDelete} variant='outlined'>
+            remove
+          </Button>
+        )}
+        <br />
+      </Paper>
+
       <b>comments</b>
       <form onSubmit={handleComment}>
-        <input {...newComment.input} />
-        <button type='submit'>comment</button>
+        {/* <input {...newComment.input} />
+         */}
+        <TextField
+          label='say something'
+          {...newComment.input}
+          variant='outlined'
+          size='small'
+        />
+        <Button variant='outlined' color='default' type='submit'>
+          comment
+        </Button>
       </form>
-      {blog.comments.map((comment, i) => (
-        <li key={i}>{comment}</li>
-      ))}
+      <Paper>
+        {blog.comments.map((comment, i) => (
+          <li key={i}>{comment}</li>
+        ))}
+      </Paper>
     </div>
   )
 }

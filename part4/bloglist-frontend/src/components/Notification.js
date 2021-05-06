@@ -1,3 +1,4 @@
+import { Alert } from '@material-ui/lab'
 import { useSelector } from 'react-redux'
 const Notification = () => {
   const notification = useSelector((state) => state.notification)
@@ -5,9 +6,9 @@ const Notification = () => {
 
   // if (notification.message === null) return null //不然会一直有一个框在上面
   if (notification.error)
-    return <div className='error'>{notification.message}</div>
+    return <Alert severity='error'>{notification.message}</Alert>
   if (notification.error === false)
-    return <div className='success'>{notification.message}</div>
+    return <Alert severity='success'>{notification.message}</Alert>
   return null
 }
 

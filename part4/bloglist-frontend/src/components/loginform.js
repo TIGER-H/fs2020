@@ -1,3 +1,4 @@
+import { Button, TextField } from '@material-ui/core'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useField } from '../hooks/hooks'
@@ -25,14 +26,18 @@ const LoginForm = () => {
     <form onSubmit={submitCreds}>
       <h2>log in to application</h2>
       <div>
-        username
-        <input {...username.input} />
+        <TextField variant='outlined' label='username' {...username.input} />
+        {/* <input {...username.input} /> */}
       </div>
       <div>
-        password
-        <input {...password.input} />
+        <TextField variant='outlined' label='password' {...password.input} />
+        {/* password
+        <input {...password.input} /> */}
       </div>
-      <button type='submit'>login</button>
+      <br />
+      <Button variant='contained' color='primary' type='submit'>
+        login
+      </Button>
     </form>
   )
 }
