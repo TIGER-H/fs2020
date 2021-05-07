@@ -1,4 +1,5 @@
-import { Button, TextField } from '@material-ui/core'
+import { Avatar, Button, TextField, Typography } from '@material-ui/core'
+import { LockOutlined } from '@material-ui/icons'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useField } from '../hooks/hooks'
@@ -23,10 +24,15 @@ const LoginForm = () => {
   }
 
   return (
-    <form onSubmit={submitCreds}>
-      <h2>log in to application</h2>
+    <form onSubmit={submitCreds} >
+      <Avatar >
+        <LockOutlined />
+      </Avatar>
+      <Typography component='h2' variant='h5'>
+        log in to application
+      </Typography>
       <div>
-        <TextField variant='outlined' label='username' {...username.input} />
+        <TextField variant='outlined' label='username' {...username.input} margin='normal' />
         {/* <input {...username.input} /> */}
       </div>
       <div>
