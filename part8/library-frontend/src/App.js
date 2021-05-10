@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
-import { QUERY_AUTHOR, QUERY_BOOK } from './components/queries'
+import { QUERY_AUTHOR, QUERY_BOOK } from './queries'
 
 const App = () => {
   const [page, setPage] = useState('authors')

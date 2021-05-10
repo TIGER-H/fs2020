@@ -1,4 +1,6 @@
-import React from 'react'
+import { useMutation } from '@apollo/client'
+import React, { useState } from 'react'
+import SetBirthYear from './SetBirthYear'
 
 const Authors = (props) => {
   if (!props.show) {
@@ -25,6 +27,7 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+      <SetBirthYear />
     </div>
   )
 }
