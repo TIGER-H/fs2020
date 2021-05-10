@@ -15,10 +15,20 @@ const QUERY_AUTHOR = gql`
     }
   }
 `
+const QUERY_BOOK = gql`
+  query {
+    allBooks {
+      title
+      author
+      published
+    }
+  }
+`
 
 const App = () => {
   const [page, setPage] = useState('authors')
   const authors = useQuery(QUERY_AUTHOR)
+  const books = useQuery(QUERY_BOOK)
   // console.log(authors.data) //这里authors有个获取的过程 怎么确保传进去的是获取到的呢？
 
   return (
@@ -30,7 +40,7 @@ const App = () => {
       </div>
       {authors.data && <Authors show={page === 'authors'} authors={authors} />}
 
-      <Books show={page === 'books'} />
+      {books.data && <Books show={page === 'books'} books={books} />}
 
       <NewBook show={page === 'add'} />
     </div>
