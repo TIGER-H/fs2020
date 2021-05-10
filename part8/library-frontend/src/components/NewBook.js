@@ -1,4 +1,27 @@
+import { gql, useMutation } from '@apollo/client'
 import React, { useState } from 'react'
+import { QUERY_AUTHOR, QUERY_BOOK } from './queries'
+
+const ADD_BOOK = gql`
+  mutation newBook(
+    $title: String!
+    $author: String!
+    $published: Int
+    $genres: [String!]!
+  ) {
+    addBook(
+      title: $title
+      author: $author
+      published: $published
+      genres: $genres
+    ) {
+      title
+      author
+      published
+      genres
+    }
+  }
+`
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
@@ -7,13 +30,18 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
+  const [newBook] = useMutation(ADD_BOOK, {
+    refetchQueries: [{ query: QUERY_AUTHOR }, { query: QUERY_BOOK }],
+  })
+
   if (!props.show) {
     return null
   }
 
   const submit = async (event) => {
     event.preventDefault()
-    
+
+    newBook({ variables: { title, author, published, genres } })
     console.log('add book...')
 
     setTitle('')
@@ -50,7 +78,7 @@ const NewBook = (props) => {
           <input
             type='number'
             value={published}
-            onChange={({ target }) => setPublished(target.value)}
+            onChange={({ target }) => setPublished(parseInt(target.value))}
           />
         </div>
         <div>
@@ -58,11 +86,11 @@ const NewBook = (props) => {
             value={genre}
             onChange={({ target }) => setGenre(target.value)}
           />
-          <button onClick={addGenre} type="button">add genre</button>
+          <button onClick={addGenre} type='button'>
+            add genre
+          </button>
         </div>
-        <div>
-          genres: {genres.join(' ')}
-        </div>
+        <div>genres: {genres.join(' ')}</div>
         <button type='submit'>create book</button>
       </form>
     </div>
