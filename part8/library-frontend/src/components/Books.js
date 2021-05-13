@@ -8,7 +8,7 @@ const Books = (props) => {
   }
 
   const books = props.books.data.allBooks
-  console.log(books)
+  // console.log(books)
 
   let allGenres = []
   books.forEach((book) => {
