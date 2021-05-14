@@ -8,7 +8,7 @@ interface Result {
   average: number
 }
 
-const calculateExercises = (hours: number[], target: number): Result => {
+const calculateExercises = (hours: Array<number>, target: number): Result => {
   const periodLength = hours.length
   const trainingDays = hours.filter((day) => day !== 0).length
   const average = hours.reduce((acc, cur) => acc + cur) / periodLength
@@ -34,4 +34,32 @@ const calculateExercises = (hours: number[], target: number): Result => {
     average,
   }
 }
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+
+interface parsed {
+  hours: Array<number>
+  target: number
+}
+
+const parse = (args: Array<string>): parsed => {
+  if (args.length < 4) {
+    throw new Error('Invalid amount of arguments')
+  }
+  if (
+    isNaN(Number(args[2])) ||
+    args.slice(3).every((elem) => isNaN(Number(elem)))
+  ) {
+    throw new Error('Arguments must be numbers')
+  }
+
+  return {
+    hours: args.slice(3).map((e) => Number(e)),
+    target: Number(args[2]),
+  }
+}
+
+try {
+  const { hours, target } = parse(process.argv)
+  console.log(calculateExercises(hours, target))
+} catch (e) {
+  console.error(e.message)
+}
