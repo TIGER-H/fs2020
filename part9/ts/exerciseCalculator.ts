@@ -35,31 +35,33 @@ const calculateExercises = (hours: Array<number>, target: number): Result => {
   };
 };
 
-interface parsed {
-  hours: Array<number>
-  target: number
-}
+// interface parsed {
+//   hours: Array<number>
+//   target: number
+// }
 
-const parse = (args: Array<string>): parsed => {
-  if (args.length < 4) {
-    throw new Error('Invalid amount of arguments');
-  }
-  if (
-    isNaN(Number(args[2])) ||
-    args.slice(3).every((elem) => isNaN(Number(elem)))
-  ) {
-    throw new Error('Arguments must be numbers');
-  }
+// const parse = (args: Array<string>): parsed => {
+//   if (args.length < 4) {
+//     throw new Error('Invalid amount of arguments');
+//   }
+//   if (
+//     isNaN(Number(args[2])) ||
+//     args.slice(3).every((elem) => isNaN(Number(elem)))
+//   ) {
+//     throw new Error('Arguments must be numbers');
+//   }
 
-  return {
-    hours: args.slice(3).map((e) => Number(e)),
-    target: Number(args[2]),
-  };
-};
+//   return {
+//     hours: args.slice(3).map((e) => Number(e)),
+//     target: Number(args[2]),
+//   };
+// };
 
-try {
-  const { hours, target } = parse(process.argv);
-  console.log(calculateExercises(hours, target));
-} catch ({message}) {
-  console.error(message);
-}
+// try {
+//   const { hours, target } = parse(process.argv);
+//   console.log(calculateExercises(hours, target));
+// } catch ({message}) {
+//   console.error(message);
+// }
+
+export default calculateExercises
