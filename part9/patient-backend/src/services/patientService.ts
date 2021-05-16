@@ -1,5 +1,6 @@
 import patientsData from '../data/patients.json'
-import { PatientsToShow } from '../types'
+import { newPatientEntry, Patients, PatientsToShow } from '../types'
+import { v1 as uuid } from 'uuid'
 
 const patients: PatientsToShow[] = patientsData
 
@@ -8,8 +9,16 @@ const getEntres = (): PatientsToShow[] => {
     )
 }
 
-const addEntry = () => {
-    return null
+const addEntry = (
+    entry: newPatientEntry
+): Patients => {
+    const id = uuid()
+    const newEntry = {
+        id,
+        ...entry
+    }
+    patientsData.push(newEntry)
+    return newEntry
 }
 
 export default {
