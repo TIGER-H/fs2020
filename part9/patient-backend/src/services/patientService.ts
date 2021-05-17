@@ -11,7 +11,7 @@ const getEntres = (): PatientsToShow[] => {
 
 const addEntry = (
     entry: newPatientEntry
-): Patients => {
+): Patients => {   
     const id = uuid()
     const newEntry = {
         id,

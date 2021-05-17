@@ -16,3 +16,9 @@ export interface Patients {
 export type PatientsToShow = Omit<Patients, "ssn">
 
 export type newPatientEntry = Omit<Patients, 'id'>
+
+export enum Gender {
+    Male = 'male',
+    Female = 'female',
+    Other = 'other'
+}
