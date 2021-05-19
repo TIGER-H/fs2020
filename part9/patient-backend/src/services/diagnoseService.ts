@@ -1,17 +1,17 @@
-import diagnosesData from '../data/diagnoses.json'
-import { Diagnose } from '../types'
+import diagnosesData from '../data/diagnoses.json';
+import { Diagnose } from '../types';
 
-const diagnoses: Array<Diagnose> = diagnosesData
+const diagnoses: Array<Diagnose> = diagnosesData;
 
 const getEntres = ():Array<Diagnose> => { 
-    return diagnoses
-}
+    return diagnoses;
+};
 
 const addEntry = () => {
-    return null
-}
+    return null;
+};
 
 export default {
     getEntres,
     addEntry
-}
+};
