@@ -5,9 +5,10 @@ import { Container, Header, Icon } from 'semantic-ui-react';
 import { apiBaseUrl } from '../constants';
 import { setPatient, useStateValue } from '../state';
 import { Patient } from '../types';
+import { EntryDetails } from './PatientEntry';
 
 export const PatientPage = () => {
-    const [{ patient, diagnoses }, dispatch] = useStateValue();
+    const [{ patient }, dispatch] = useStateValue();
     const { id } = useParams<{ id: string }>();
     useEffect(() => {
         const fetchPatient = async () => {
@@ -36,15 +37,8 @@ export const PatientPage = () => {
             <p>occupation:{patient?.occupation}</p>
             <Header as='h3'>entries</Header>
             <div>{patient?.entries.map(entry =>
-                <div key={entry.id}>
-                    <span key={entry.id}>{entry.date} {entry.description}</span>
-                    <ul>
-                        {entry.diagnosisCodes?.map((code) =>
-                            <li key={code} >
-                                {code} {diagnoses[code] ? diagnoses[code].name : null}
-                            </li>)}
-                    </ul>
-                </div>)}
+                <EntryDetails key={entry.id} entry={entry} />)
+            }
             </div>
         </Container>
     );
