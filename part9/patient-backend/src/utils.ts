@@ -1,4 +1,5 @@
 import { BaseEntry, Diagnose, Entry, Gender, HealthCheckRating, newPatientEntry } from './types';
+import { v1 as uuid } from 'uuid'
 
 const isString = (text: unknown): text is string => {
     return typeof text === 'string' || text instanceof String;
@@ -35,7 +36,7 @@ const parseDiagnosisCodes = (codes: unknown): Array<Diagnose['code']> => {
 }
 
 const parseHealthcheckRating = (rating: unknown): HealthCheckRating => {
-    if (!rating || !isHealthcheckRating(rating)) {
+    if (rating === undefined || !isHealthcheckRating(rating)) { //rating can be 0 => healthy
         throw new Error(`Incorrect or missing field parseHealthcheckRating: ${rating}`)
     }
     return rating;
@@ -55,7 +56,7 @@ export const toNewPatient = (object: any): newPatientEntry => {
 
 export const toNewEntry = (object: any): Entry => {
     const newEntry: BaseEntry = {
-        id: parseString(object.id),
+        id: uuid(),
         description: parseString(object.description),
         date: parseString(object.date),
         specialist: parseString(object.specialist),
