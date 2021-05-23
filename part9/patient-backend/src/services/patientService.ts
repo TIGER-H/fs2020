@@ -37,6 +37,8 @@ const getEntry = (id: string): Entry[] => {
 const addEntry = (
     id: string, entry: Entry
 ): Patient => {
+    console.log(entry);
+
     const patient = getPatient(id)
     const updatedPatient = {
         ...patient,

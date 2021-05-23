@@ -24,10 +24,10 @@ const PatientPage = () => {
     };
 
     const submitNewEntry = async (values: EntryFormValues) => {
-        try {
+        try {  
             const { data: updatedPatient } = await axios.post<Patient>(
                 `${apiBaseUrl}/patients/${id}/entries`,
-                { ...values, type: "HealthCheck", healthCheckRating: values.healthCheckRating }
+                values
             );
             dispatch(setPatientUpdate(updatedPatient));
             closeModal();
@@ -72,8 +72,9 @@ const PatientPage = () => {
                 onSubmit={submitNewEntry}
                 error={error}
                 onClose={closeModal}
+                patientId={id}
             />
-            <Button onClick={() => openModal()}>Add a new health check entry</Button>
+            <Button onClick={() => openModal()}>Add a new entry</Button>
         </Container>
     );
 };

@@ -8,7 +8,7 @@ interface EntryData {
 }
 
 const healthCheckRatingColor = (rating: HealthCheckRating) => {
-    switch (rating) {
+    switch (Number(rating)) { // rating can be string!
         case 0:
             return <Icon name='heart' color='green' />;
         case 1:

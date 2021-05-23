@@ -35,8 +35,9 @@ const parseDiagnosisCodes = (codes: unknown): Array<Diagnose['code']> => {
     return codes.map(code => parseString(code))
 }
 
-const parseHealthcheckRating = (rating: unknown): HealthCheckRating => {
-    if (rating === undefined || !isHealthcheckRating(rating)) { //rating can be 0 => healthy
+const parseHealthcheckRating = (rating: any): HealthCheckRating => {
+    const ratingNumber: Number = parseInt(rating); 
+    if (ratingNumber === undefined || !isHealthcheckRating(ratingNumber)) { //rating can be 0 => healthy
         throw new Error(`Incorrect or missing field parseHealthcheckRating: ${rating}`)
     }
     return rating;
