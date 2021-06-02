@@ -11,17 +11,17 @@ const styles = StyleSheet.create({
   author: {
     display: "flex",
     flexDirection: "row",
+    alignItems: "flex-start",
     marginBottom: 8,
   },
 
   authorText: {
-    display: "flex",
     justifyContent: "space-around",
-    alignItems: "flex-start",
+    alignItems: "flex-start"
   },
 
   text: {
-    flexWrap: "wrap",
+    fontSize: 16,
     marginTop: 10,
   },
 });
@@ -33,10 +33,29 @@ const UserAvatar = ({ url }) => {
       height: 50,
       margin: 12,
       borderRadius: 10,
+      marginRight:20
     },
   });
   return <Image source={url} style={imageStyles.image} />;
 };
+
+const UserInfo = ({ name, description, language }) => {
+  const infoStyles = StyleSheet.create({
+    info: {
+      display: "flex",
+      alignItems: "flex-start"
+    }
+  })
+  return <View style={infoStyles.info}>
+    <Text fontWeight="bold" fontSize="subheading" style={styles.text}>
+      {name}
+    </Text>
+    <Text style={styles.text} color="textSecondary">
+      {description}
+    </Text>
+    <LangTag lang={language} />
+  </View>
+}
 
 const LangTag = ({ lang }) => {
   const languageTagStyles = StyleSheet.create({
@@ -84,7 +103,7 @@ const Detail = ({
     detail: {
       display: "flex",
       flexDirection: "row",
-      justifyContent: "space-evenly",
+      justifyContent: "space-around",
       margin: 10,
     },
   });
@@ -104,15 +123,7 @@ const RepositoryListItem = ({ item }) => {
     <View>
       <View style={styles.author}>
         <UserAvatar url={item.ownerAvatarUrl} />
-        <View style={styles.authorText}>
-          <Text fontWeight="bold" fontSize="subheading" style={styles.text}>
-            {item.fullName}
-          </Text>
-          <Text style={styles.text} color="textSecondary">
-            {item.description}
-          </Text>
-          <LangTag lang={item.language} />
-        </View>
+        <UserInfo name={item.fullName} description={item.description} language={item.language} />
       </View>
       <Detail
         stargazersCount={item.stargazersCount}
