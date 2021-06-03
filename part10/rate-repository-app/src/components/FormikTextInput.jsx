@@ -16,8 +16,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 20,
   },
+  errorInput: {
+    borderColor: theme.colors.error,
+  },
   errorText: {
     marginTop: 5,
+    color: theme.colors.error,
   },
 });
 
@@ -25,10 +29,12 @@ const FormikTextInput = ({ name, ...props }) => {
   const [field, meta, helpers] = useField(name);
   const showError = meta.touched && meta.error;
 
+  const inputstyles = [styles.input, showError && styles.errorInput];
+
   return (
     <>
       <TextInput
-        style={styles.input}
+        style={inputstyles}
         onChangeText={(value) => helpers.setValue(value)}
         onBlur={() => helpers.setTouched(true)}
         value={field.value}
