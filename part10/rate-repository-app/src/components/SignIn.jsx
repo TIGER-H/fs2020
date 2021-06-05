@@ -6,6 +6,7 @@ import FormikTextInput from './FormikTextInput';
 import * as yup from 'yup';
 
 import Text from './Text';
+import useSignIn from '../hooks/useSignIn';
 
 const styles = StyleSheet.create({
   container: {
@@ -26,12 +27,8 @@ const styles = StyleSheet.create({
 });
 
 const validationSchema = yup.object().shape({
-  username: yup
-  .string()
-  .required('Username is required'),
-  password: yup
-  .string()
-  .required('Password is required'),
+  username: yup.string().required('Username is required'),
+  password: yup.string().required('Password is required'),
 });
 
 const initialValues = {
@@ -52,9 +49,19 @@ const SignInForm = ({ onSubmit }) => {
 };
 
 const SignIn = () => {
-  const onSubmit = (values) => {
-    console.log(values);
+  const [signIn, result] = useSignIn();
+
+  const onSubmit = async (values) => {
+    const { username, password } = values;
+
+    try {
+      await signIn({ username, password });
+      console.log(result.data); //1.undefined 2.authorize
+    } catch (e) {
+      console.log(e);
+    }
   };
+
   return (
     <View>
       <Formik
