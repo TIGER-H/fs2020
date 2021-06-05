@@ -7,6 +7,9 @@ import * as yup from 'yup';
 
 import Text from './Text';
 import useSignIn from '../hooks/useSignIn';
+import AuthStorage from '../utils/authStorage';
+
+const authStorage = new AuthStorage();
 
 const styles = StyleSheet.create({
   container: {
@@ -54,11 +57,21 @@ const SignIn = () => {
   const onSubmit = async (values) => {
     const { username, password } = values;
 
+    const currentToken = await authStorage.getAccessToken();
+    console.log('current token', currentToken);
+    await authStorage.removeAccessToken();
+    const tokenCheck = await authStorage.getAccessToken();
+    console.log('current token', tokenCheck);
+
     try {
       await signIn({ username, password });
-      console.log(result.data); //1.undefined 2.authorize
+      // console.log(result.data); //1.undefined 2.authorize
+      if (result.data) {
+        const token = result.data.authorize.accessToken;
+        authStorage.setAccessToken(token);
+      }
     } catch (e) {
-      console.log(e);
+      console.log('error occured when signing in', e);
     }
   };
 
