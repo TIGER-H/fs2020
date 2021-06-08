@@ -4,29 +4,22 @@ import { GET_TOKEN } from '../graphql/mutations';
 import useAuthStorage from './useAuthStorage';
 
 const useSignIn = () => {
-  const client = useApolloClient();
+  const [mutate, result] = useMutation(GET_TOKEN); // 提交账密以获得token
   const authStorage = useAuthStorage();
-  const [mutate, result] = useMutation(GET_TOKEN);
+  const client = useApolloClient();
 
-  const SignIn = async ({ username, password }) => {
+  const signIn = async ({ username, password }) => {
     const response = await mutate({
-      variables: {
-        username: username,
-        password: password,
-      },
+      variables: { input: { username, password } },
     });
-    if (response.data) {
-      const token = response.data.authorize.accessToken;
-      console.log('token: ', token);
+    const token = response.data.authorize.accessToken;
 
-      await authStorage.setAccessToken(token);
-      client.resetStore();
+    await authStorage.setAccessToken(token);
+    client.resetStore(); // 认证后重置存储 清空缓存 重新执行活跃的查询
 
-      return true;
-    }
-    return false;
+    return response;
   };
-  return [SignIn, result];
+  return [signIn, result];
 };
 
 export default useSignIn;

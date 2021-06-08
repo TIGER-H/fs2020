@@ -8,6 +8,7 @@ import * as yup from 'yup';
 import Text from './Text';
 import useSignIn from '../hooks/useSignIn';
 import { useHistory } from 'react-router';
+import useAuthStorage from '../hooks/useAuthStorage';
 
 const styles = StyleSheet.create({
   container: {
@@ -51,31 +52,21 @@ const SignInForm = ({ onSubmit }) => {
 
 const SignIn = () => {
   let history = useHistory();
+  const authStorage = useAuthStorage();
   const [signIn] = useSignIn();
 
   const onSubmit = async (values) => {
     const { username, password } = values;
 
-    // const currentToken = await authStorage.getAccessToken();
-    // console.log('current token', currentToken);
-    // await authStorage.removeAccessToken();
-    // const tokenCheck = await authStorage.getAccessToken();
-    // console.log('current token', tokenCheck);
-
     try {
-      const response = await signIn({ username, password });
+      await signIn({ username, password });
       // console.log(result.data); //1.undefined 2.authorize
-      if (response) {
-        history.push('/');
-      }
-
-      // 该逻辑移入useSIgnIn
-      // if (result.data) {
-      //   const token = result.data.authorize.accessToken;
-      //   authStorage.setAccessToken(token);
-      // }
+      const token = await authStorage.getAccessToken();
+      console.log(token); // got a token, check
+      history.push('/');
     } catch (e) {
       console.log('error occured when signing in', e);
+      // window.alert('wrong username/password!');
     }
   };
 
