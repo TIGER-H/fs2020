@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
 
   authorText: {
     justifyContent: "space-around",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
   },
 
   text: {
@@ -33,7 +33,7 @@ const UserAvatar = ({ url }) => {
       height: 50,
       margin: 12,
       borderRadius: 10,
-      marginRight:20
+      marginRight: 20,
     },
   });
   return <Image source={url} style={imageStyles.image} />;
@@ -43,19 +43,26 @@ const UserInfo = ({ name, description, language }) => {
   const infoStyles = StyleSheet.create({
     info: {
       display: "flex",
-      alignItems: "flex-start"
-    }
-  })
-  return <View style={infoStyles.info}>
-    <Text fontWeight="bold" fontSize="subheading" style={styles.text}>
-      {name}
-    </Text>
-    <Text style={styles.text} color="textSecondary">
-      {description}
-    </Text>
-    <LangTag lang={language} />
-  </View>
-}
+      alignItems: "flex-start",
+    },
+  });
+  return (
+    <View style={infoStyles.info}>
+      <Text
+        fontWeight="bold"
+        fontSize="subheading"
+        style={styles.text}
+        testID="fullName"
+      >
+        {name}
+      </Text>
+      <Text style={styles.text} color="textSecondary" testID="description">
+        {description}
+      </Text>
+      <LangTag lang={language} />
+    </View>
+  );
+};
 
 const LangTag = ({ lang }) => {
   const languageTagStyles = StyleSheet.create({
@@ -67,10 +74,14 @@ const LangTag = ({ lang }) => {
       marginTop: 10,
     },
   });
-  return <Text style={languageTagStyles.languageTag}>{lang}</Text>;
+  return (
+    <Text style={languageTagStyles.languageTag} testID="language">
+      {lang}
+    </Text>
+  );
 };
 
-const DetailItem = ({ count, label }) => {
+const DetailItem = ({ count, label, testID }) => {
   const detailItemStyles = StyleSheet.create({
     count: { display: "flex", justifyContent: "space-around" },
     label: { display: "flex", justifyContent: "space-around", marginTop: 6 },
@@ -83,7 +94,7 @@ const DetailItem = ({ count, label }) => {
 
   return (
     <View>
-      <Text fontWeight="bold" style={detailItemStyles.count}>
+      <Text fontWeight="bold" style={detailItemStyles.count} testID={testID}>
         {countCopy}
       </Text>
       <Text style={detailItemStyles.label} color="textSecondary">
@@ -110,10 +121,18 @@ const Detail = ({
 
   return (
     <View style={detailStyles.detail}>
-      <DetailItem count={stargazersCount} label={"Stars"} />
-      <DetailItem count={forksCount} label={"Forks"} />
-      <DetailItem count={reviewCount} label={"Reviews"} />
-      <DetailItem count={ratingAverage} label={"Rating"} />
+      <DetailItem
+        count={stargazersCount}
+        label={"Stars"}
+        testID="stargazersCount"
+      />
+      <DetailItem count={forksCount} label={"Forks"} testID="forksCount" />
+      <DetailItem count={reviewCount} label={"Reviews"} testID="reviewCount" />
+      <DetailItem
+        count={ratingAverage}
+        label={"Rating"}
+        testID="ratingAverage"
+      />
     </View>
   );
 };
@@ -123,7 +142,11 @@ const RepositoryListItem = ({ item }) => {
     <View>
       <View style={styles.author}>
         <UserAvatar url={item.ownerAvatarUrl} />
-        <UserInfo name={item.fullName} description={item.description} language={item.language} />
+        <UserInfo
+          name={item.fullName}
+          description={item.description}
+          language={item.language}
+        />
       </View>
       <Detail
         stargazersCount={item.stargazersCount}
