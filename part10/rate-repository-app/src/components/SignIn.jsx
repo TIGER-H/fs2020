@@ -37,12 +37,21 @@ const initialValues = {
   password: "",
 };
 
-const SignInForm = ({ onSubmit }) => {
+export const SignInForm = ({ onSubmit }) => {
   return (
     <View style={styles.container}>
-      <FormikTextInput name="username" placeholder="Username" />
-      <FormikTextInput name="password" placeholder="Password" secureTextEntry />
-      <Pressable onPress={onSubmit} style={styles.submit}>
+      <FormikTextInput
+        name="username"
+        placeholder="Username"
+        testID="usernameField"
+      />
+      <FormikTextInput
+        name="password"
+        placeholder="Password"
+        testID="passwordField"
+        secureTextEntry
+      />
+      <Pressable onPress={onSubmit} style={styles.submit} testID="submitButton">
         <Text style={styles.text}>Sign in</Text>
       </Pressable>
     </View>

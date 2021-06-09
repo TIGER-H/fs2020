@@ -36,7 +36,7 @@ const UserAvatar = ({ url }) => {
       marginRight: 20,
     },
   });
-  return <Image source={url} style={imageStyles.image} />;
+  return <Image source={{ uri: url }} style={imageStyles.image} />;
 };
 
 const UserInfo = ({ name, description, language }) => {
