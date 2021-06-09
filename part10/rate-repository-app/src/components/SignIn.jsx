@@ -1,14 +1,13 @@
-import { Formik, useField } from 'formik';
-import React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import theme from '../theme';
-import FormikTextInput from './FormikTextInput';
-import * as yup from 'yup';
+import { Formik, useField } from "formik";
+import React from "react";
+import { Pressable, StyleSheet, View } from "react-native";
+import theme from "../theme";
+import FormikTextInput from "./FormikTextInput";
+import * as yup from "yup";
 
-import Text from './Text';
-import useSignIn from '../hooks/useSignIn';
-import { useHistory } from 'react-router';
-import useAuthStorage from '../hooks/useAuthStorage';
+import Text from "./Text";
+import useSignIn from "../hooks/useSignIn";
+import { useHistory } from "react-router";
 
 const styles = StyleSheet.create({
   container: {
@@ -20,8 +19,8 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 5,
     backgroundColor: theme.colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
     color: theme.colors.appBarText,
@@ -29,20 +28,20 @@ const styles = StyleSheet.create({
 });
 
 const validationSchema = yup.object().shape({
-  username: yup.string().required('Username is required'),
-  password: yup.string().required('Password is required'),
+  username: yup.string().required("Username is required"),
+  password: yup.string().required("Password is required"),
 });
 
 const initialValues = {
-  username: '',
-  password: '',
+  username: "",
+  password: "",
 };
 
 const SignInForm = ({ onSubmit }) => {
   return (
     <View style={styles.container}>
-      <FormikTextInput name='username' placeholder='Username' />
-      <FormikTextInput name='password' placeholder='Password' secureTextEntry />
+      <FormikTextInput name="username" placeholder="Username" />
+      <FormikTextInput name="password" placeholder="Password" secureTextEntry />
       <Pressable onPress={onSubmit} style={styles.submit}>
         <Text style={styles.text}>Sign in</Text>
       </Pressable>
@@ -52,21 +51,17 @@ const SignInForm = ({ onSubmit }) => {
 
 const SignIn = () => {
   let history = useHistory();
-  const authStorage = useAuthStorage();
   const [signIn] = useSignIn();
-
   const onSubmit = async (values) => {
     const { username, password } = values;
 
     try {
-      await signIn({ username, password });
+      const { data } = await signIn({ username, password });
+      console.log(data);
       // console.log(result.data); //1.undefined 2.authorize
-      const token = await authStorage.getAccessToken();
-      console.log(token); // got a token, check
-      history.push('/');
+      history.push("/");
     } catch (e) {
-      console.log('error occured when signing in', e);
-      // window.alert('wrong username/password!');
+      console.log("error occured when signing in", e);
     }
   };
 
