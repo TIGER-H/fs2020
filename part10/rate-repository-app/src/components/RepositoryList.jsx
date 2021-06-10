@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
 const ItemSeparator = () => <View style={styles.separator} />;
 
 export const RepositoryListContainer = ({ repositories }) => {
-  const history = useHistory();
+  const history = useHistory(); 
   const repositoryNodes =
     repositories && repositories.edges
       ? repositories.edges.map((edge) => edge.node)
