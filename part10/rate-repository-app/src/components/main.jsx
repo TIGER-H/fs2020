@@ -6,6 +6,7 @@ import AppBar from './AppBar';
 import { Redirect, Route, Switch } from 'react-router-native';
 import SignIn from './SignIn';
 import SignOut from './SignOut';
+import Repository from './Repository';
 
 const styles = StyleSheet.create({
   container: {
@@ -28,6 +29,9 @@ const Main = () => {
         </Route>
         <Route path='/' exact>
           <RepositoryList />
+        </Route>
+        <Route path='/repo/:id' exact>
+          <Repository />
         </Route>
         <Redirect to='/' />
       </Switch>

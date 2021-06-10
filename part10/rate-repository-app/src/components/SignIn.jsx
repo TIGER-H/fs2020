@@ -65,8 +65,7 @@ const SignIn = () => {
     const { username, password } = values;
 
     try {
-      const { data } = await signIn({ username, password });
-      console.log(data);
+      await signIn({ username, password });
       // console.log(result.data); //1.undefined 2.authorize
       history.push("/");
     } catch (e) {

@@ -25,7 +25,6 @@ const AppBar = () => {
     fetchPolicy: "cache-and-network",
   });
   const loggedIn = data && data.authorizedUser;
-  console.log(data);
 
   return (
     <View style={styles.container}>
