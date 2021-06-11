@@ -12,7 +12,7 @@
   "dependencies": {
     "@apollo/client": "^3.3.19",
     "@react-native-async-storage/async-storage": "^1.15.5",
-    "@react-native-picker/picker": "^1.9.2",
+    "@react-native-picker/picker": "1.9.2",
     "date-fns": "^2.22.1",
     "dotenv": "^10.0.0",
     "expo": "~40.0.0",
@@ -26,6 +26,7 @@
     "react-native-paper": "^4.9.1",
     "react-native-web": "^0.16.3",
     "react-router-native": "^5.2.0",
+    "use-debounce": "^6.0.1",
     "yup": "^0.32.9"
   },
   "devDependencies": {

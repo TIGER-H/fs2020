@@ -4,6 +4,8 @@ import { useHistory } from 'react-router';
 import useRepositories from '../hooks/useRepositories';
 import RepositoryListItem from './RepositoryItem';
 import { Picker } from '@react-native-picker/picker';
+import { Searchbar } from 'react-native-paper';
+import { useDebounce } from 'use-debounce';
 
 const styles = StyleSheet.create({
   separator: {
@@ -13,60 +15,81 @@ const styles = StyleSheet.create({
     height: 50,
     paddingLeft: 10,
     fontSize: 20,
-    margin: 5,
     borderRadius: 5,
+    marginVertical: 5,
   },
 });
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-export const RepositoryListContainer = ({
-  repositories,
-  method,
-  changeMethod,
-}) => {
-  const history = useHistory();
-  const repositoryNodes =
-    repositories && repositories.edges
-      ? repositories.edges.map((edge) => edge.node)
-      : [];
-
-  const PressRepoItem = ({ item }) => {
-    const onPress = () => {
-      history.push(`/repo/${item.id}`);
-    };
+export class RepositoryListContainer extends React.Component {
+  renderHeader = () => {
+    // this.props contains the component's props
+    const props = this.props;
+    // ...
     return (
-      <Pressable onPress={onPress}>
-        <RepositoryListItem item={item} />
-      </Pressable>
-    );
-  };
-
-  return (
-    <FlatList
-      ListHeaderComponent={() => (
+      <View>
+        <Searchbar
+          style={{ marginTop: 5 }}
+          placeholder='Search'
+          onChangeText={props.searchBarOnChange}
+          value={props.searchBarText}
+        />
         <Picker
           style={styles.picker}
-          selectedValue={method}
-          onValueChange={(itemVal, _itemIdx) => changeMethod(itemVal)}
+          selectedValue={props.method}
+          onValueChange={(itemVal, _itemIdx) => props.changeMethod(itemVal)}
         >
           <Picker.Item label='Latest' value='latest' />
           <Picker.Item label='Highest rated' value='highest' />
           <Picker.Item label='Lowest rated' value='lowest' />
         </Picker>
-      )}
-      data={repositoryNodes}
-      // ...
-      ItemSeparatorComponent={ItemSeparator}
-      renderItem={PressRepoItem}
-    />
-  );
-};
+      </View>
+    );
+  };
+
+  render() {
+    const props = this.props;
+    const repositoryNodes =
+      props.repositories && props.repositories.edges
+        ? props.repositories.edges.map((edge) => edge.node)
+        : [];
+
+    const PressRepoItem = ({ item }) => {
+      const onPress = () => {
+        props.history.push(`/repo/${item.id}`);
+      };
+
+      return (
+        <Pressable onPress={onPress}>
+          <RepositoryListItem item={item} />
+        </Pressable>
+      );
+    };
+
+    return (
+      <FlatList
+        // ...
+        ListHeaderComponent={this.renderHeader}
+        data={repositoryNodes}
+        // ...
+        ItemSeparatorComponent={ItemSeparator}
+        renderItem={PressRepoItem}
+      />
+    );
+  }
+}
 
 const RepositoryList = () => {
   const [sortMethod, setSortMethod] = useState('latest');
-  const { repositories } = useRepositories(sortMethod);
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [searchQueryDebounced] = useDebounce(searchQuery, 50);
+  const { repositories } = useRepositories(sortMethod, searchQueryDebounced);
+  const history = useHistory();
 
+  // console.log(searchQuery); // lost focus! check 10.24
+
+  const onChangeSearch = (query) => setSearchQuery(query);
   const handleSortChange = (sort) => setSortMethod(sort);
 
   return (
@@ -75,6 +98,9 @@ const RepositoryList = () => {
         repositories={repositories}
         method={sortMethod}
         changeMethod={handleSortChange}
+        searchBarText={searchQuery}
+        searchBarOnChange={onChangeSearch}
+        history={history}
       />
     </View>
   );

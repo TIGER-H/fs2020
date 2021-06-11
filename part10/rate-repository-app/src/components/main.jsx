@@ -12,6 +12,7 @@ import SignUp from './SignUp';
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#eee',
     marginTop: Constants.statusBarHeight,
     flexGrow: 1,
     flexShrink: 1,
