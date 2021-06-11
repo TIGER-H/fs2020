@@ -30,9 +30,10 @@ const AppBar = () => {
     <View style={styles.container}>
       <ScrollView horizontal>
         <AppBarTab name={'Repositories'} url='/' />
-        {!loggedIn && <AppBarTab name={'Sign in'} url='/signin' />}
+        {!loggedIn && <AppBarTab name={'Sign In'} url='/signin' />}
         {loggedIn && <AppBarTab name={'Sign Out'} url='/signout' />}
         {loggedIn && <AppBarTab name={'Create Review'} url='/createReview' />}
+        {!loggedIn && <AppBarTab name={'Sign Up'} url='/signup' />}
       </ScrollView>
     </View>
   );
