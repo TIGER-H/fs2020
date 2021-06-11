@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     marginTop: 10,
-    padding: 20,
+    paddingLeft: 20,
   },
   errorInput: {
     borderColor: theme.colors.error,
