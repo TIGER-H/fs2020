@@ -7,6 +7,7 @@ import { Redirect, Route, Switch } from 'react-router-native';
 import SignIn from './SignIn';
 import SignOut from './SignOut';
 import Repository from './Repository';
+import CreateReview from './CreateReview';
 
 const styles = StyleSheet.create({
   container: {
@@ -32,6 +33,9 @@ const Main = () => {
         </Route>
         <Route path='/repo/:id' exact>
           <Repository />
+        </Route>
+        <Route path='/createReview' exact>
+          <CreateReview />
         </Route>
         <Redirect to='/' />
       </Switch>

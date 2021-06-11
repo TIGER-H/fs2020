@@ -79,7 +79,7 @@ const Repository = () => {
   const { id } = useParams();
   const { data, loading } = useRepository(id);
   if (loading) return <Text>waiting for loading</Text>;
-  // console.log(data.repository.url);
+  // console.log(data.repository.reviews.edges[0].node.id);
 
   const onPress = () => {
     Linking.openURL(data.repository.url);
@@ -101,8 +101,8 @@ const Repository = () => {
             </Pressable>
           </View>
         )}
+        keyExtractor={(item) => item.node.id}
       />
-      {/* <RepositoryListItem item={data.repository} /> */}
     </View>
   );
 };
