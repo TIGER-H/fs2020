@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const GET_TOKEN = gql`
   mutation GetToken($input: AuthorizeInput) {
@@ -22,5 +22,11 @@ export const SIGN_UP = gql`
       username
       id
     }
+  }
+`;
+
+export const DELETE_REVIEW = gql`
+  mutation DeleteReview($id: ID!) {
+    deleteReview(id: $id)
   }
 `;

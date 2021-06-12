@@ -1,18 +1,19 @@
-import React from 'react';
-import Constants from 'expo-constants';
-import { StyleSheet, View } from 'react-native';
-import RepositoryList from './RepositoryList';
-import AppBar from './AppBar';
-import { Redirect, Route, Switch } from 'react-router-native';
-import SignIn from './SignIn';
-import SignOut from './SignOut';
-import Repository from './Repository';
-import CreateReview from './CreateReview';
-import SignUp from './SignUp';
+import React from "react";
+import Constants from "expo-constants";
+import { StyleSheet, View } from "react-native";
+import RepositoryList from "./RepositoryList";
+import AppBar from "./AppBar";
+import { Redirect, Route, Switch } from "react-router-native";
+import SignIn from "./SignIn";
+import SignOut from "./SignOut";
+import Repository from "./Repository";
+import CreateReview from "./CreateReview";
+import SignUp from "./SignUp";
+import Reviews from "./Reviews";
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#eee',
+    backgroundColor: "#eee",
     marginTop: Constants.statusBarHeight,
     flexGrow: 1,
     flexShrink: 1,
@@ -24,25 +25,28 @@ const Main = () => {
     <View style={styles.container}>
       <AppBar />
       <Switch>
-        <Route path='/signin'>
+        <Route path="/signin">
           <SignIn />
         </Route>
-        <Route path='/signout'>
+        <Route path="/signout">
           <SignOut />
         </Route>
-        <Route path='/' exact>
+        <Route path="/" exact>
           <RepositoryList />
         </Route>
-        <Route path='/repo/:id' exact>
+        <Route path="/repo/:id" exact>
           <Repository />
         </Route>
-        <Route path='/createReview' exact>
+        <Route path="/createReview" exact>
           <CreateReview />
         </Route>
-        <Route path='/signup' exact>
+        <Route path="/reviews" exact>
+          <Reviews />
+        </Route>
+        <Route path="/signup" exact>
           <SignUp />
         </Route>
-        <Redirect to='/' />
+        <Redirect to="/" />
       </Switch>
     </View>
   );

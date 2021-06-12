@@ -7,7 +7,7 @@ import RepositoryListItem from "./RepositoryItem";
 import Text from "./Text";
 // import * as WebBrowser from 'expo-web-browser';
 import * as Linking from "expo-linking";
-import { format } from "date-fns";
+import ReviewItem from "./ReviewItem";
 
 const styles = StyleSheet.create({
   submit: {
@@ -26,54 +26,9 @@ const styles = StyleSheet.create({
     height: 10,
     backgroundColor: "white",
   },
-
-  container: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 10,
-  },
-
-  reviewContainer: {
-    flex: 1,
-    display: "flex",
-    marginLeft: 10,
-  },
-
-  ratingContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    borderColor: theme.colors.primary,
-    borderWidth: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
 });
 
 const ItemSeparator = () => <View style={styles.separator} />;
-
-const ReviewItem = ({ review }) => {
-  // Single review item
-  const dateFormat = (date) => {
-    return format(new Date(date), "dd.MM.yyyy");
-  };
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.ratingContainer}>
-        <Text fontWeight="bold" color="primary">
-          {review.node.rating}
-        </Text>
-      </View>
-      <View style={styles.reviewContainer}>
-        <Text fontWeight="bold">{review.node.user.username}</Text>
-        <Text>{dateFormat(review.node.createdAt)}</Text>
-        <Text>{review.node.text}</Text>
-      </View>
-    </View>
-  );
-};
 
 const Repository = () => {
   const { id } = useParams();
