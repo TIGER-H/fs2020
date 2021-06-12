@@ -1,4 +1,11 @@
-import { Alert, FlatList, Pressable, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  FlatList,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 import { useHistory } from "react-router";
 import useUser from "../hooks/useUser";
 import ReviewItem from "./ReviewItem";
@@ -71,7 +78,17 @@ const Reviews = () => {
           >
             <Text style={styles.text}>View repository</Text>
           </Pressable>
-          <Pressable onPress={createTwoButtonAlert} style={styles.submitred}>
+          <Pressable
+            onPress={
+              Platform.OS === "web"
+                ? () => {
+                    if (confirm("Are you sure to delete?"))
+                      deleteReview(review.node.id);
+                  }
+                : createTwoButtonAlert
+            }
+            style={styles.submitred}
+          >
             <Text style={styles.text}>Delete review</Text>
           </Pressable>
         </View>
