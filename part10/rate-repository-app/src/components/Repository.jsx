@@ -42,7 +42,7 @@ const Repository = () => {
   };
 
   const onPress = () => {
-    Linking.openURL(data.repository.url);
+    Linking.openURL(repository.url);
     // WebBrowser.openBrowserAsync(data.repository.url);
   };
 
