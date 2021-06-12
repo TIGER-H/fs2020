@@ -1,15 +1,20 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 export const GET_REPOSITORIES = gql`
   query (
     $input_dir: OrderDirection
     $input_by: AllRepositoriesOrderBy
     $input_search: String
+    $first: Int
+    $after: String
   ) {
     repositories(
       orderDirection: $input_dir
       orderBy: $input_by
       searchKeyword: $input_search
+      first: $first
+      after: $after
     ) {
+      totalCount
       edges {
         node {
           id
@@ -22,13 +27,20 @@ export const GET_REPOSITORIES = gql`
           reviewCount
           ownerAvatarUrl
         }
+        cursor
+      }
+      pageInfo {
+        hasPreviousPage
+        hasNextPage
+        startCursor
+        endCursor
       }
     }
   }
 `;
 
 export const GET_REPO = gql`
-  query repo($id: ID!) {
+  query repo($id: ID!, $first: Int, $after: String) {
     repository(id: $id) {
       id
       fullName
@@ -40,8 +52,15 @@ export const GET_REPO = gql`
       ratingAverage
       reviewCount
       ownerAvatarUrl
-      reviews {
+      reviews(first: $first, after: $after) {
+        pageInfo {
+          hasPreviousPage
+          hasNextPage
+          startCursor
+          endCursor
+        }
         edges {
+          cursor
           node {
             id
             text

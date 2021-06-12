@@ -1,17 +1,40 @@
-import React, { createContext, useContext, useState } from 'react';
-import { FlatList, View, StyleSheet, Pressable } from 'react-native';
-import { useHistory } from 'react-router';
-import useRepositories from '../hooks/useRepositories';
-import RepositoryListItem from './RepositoryItem';
-import { Picker } from '@react-native-picker/picker';
-import { Searchbar } from 'react-native-paper';
-import { useDebounce } from 'use-debounce';
+import React, { createContext, useContext, useState } from "react";
+import { FlatList, View, StyleSheet, Pressable } from "react-native";
+import { useHistory } from "react-router";
+import useRepositories from "../hooks/useRepositories";
+import RepositoryListItem from "./RepositoryItem";
+import { Picker } from "@react-native-picker/picker";
+import { Searchbar } from "react-native-paper";
+import { useDebounce } from "use-debounce";
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    // paddingVertical: 12,
+    // paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 4,
+    color: "black",
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: "purple",
+    borderRadius: 8,
+    color: "black",
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+});
 
 const styles = StyleSheet.create({
   separator: {
     height: 10,
   },
-  picker: {
+  picker: { // not working on iPhoneX
     height: 50,
     paddingLeft: 10,
     fontSize: 20,
@@ -31,18 +54,18 @@ export class RepositoryListContainer extends React.Component {
       <View>
         <Searchbar
           style={{ marginTop: 5 }}
-          placeholder='Search'
+          placeholder="Search"
           onChangeText={props.searchBarOnChange}
           value={props.searchBarText}
         />
         <Picker
-          style={styles.picker}
+          style={pickerSelectStyles}
           selectedValue={props.method}
           onValueChange={(itemVal, _itemIdx) => props.changeMethod(itemVal)}
         >
-          <Picker.Item label='Latest' value='latest' />
-          <Picker.Item label='Highest rated' value='highest' />
-          <Picker.Item label='Lowest rated' value='lowest' />
+          <Picker.Item label="Latest" value="latest" />
+          <Picker.Item label="Highest rated" value="highest" />
+          <Picker.Item label="Lowest rated" value="lowest" />
         </Picker>
       </View>
     );
@@ -75,16 +98,21 @@ export class RepositoryListContainer extends React.Component {
         // ...
         ItemSeparatorComponent={ItemSeparator}
         renderItem={PressRepoItem}
+        onEndReached={props.onEndReached}
+        onEndReachedThreshold={0.5}
       />
     );
   }
 }
 
 const RepositoryList = () => {
-  const [sortMethod, setSortMethod] = useState('latest');
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const [sortMethod, setSortMethod] = useState("latest");
+  const [searchQuery, setSearchQuery] = React.useState("");
   const [searchQueryDebounced] = useDebounce(searchQuery, 50);
-  const { repositories } = useRepositories(sortMethod, searchQueryDebounced);
+  const { repositories, fetchMore } = useRepositories(
+    sortMethod,
+    searchQueryDebounced
+  );
   const history = useHistory();
 
   // console.log(searchQuery); // lost focus! check 10.24
@@ -92,8 +120,14 @@ const RepositoryList = () => {
   const onChangeSearch = (query) => setSearchQuery(query);
   const handleSortChange = (sort) => setSortMethod(sort);
 
+  const onEndReach = () => {
+    console.log(`you've reached the end!`);
+    fetchMore();
+  };
+
   return (
-    <View style={{ backgroundColor: '#eee' }}>
+    // 底部可见 pixel3 iPhone
+    <View style={{ backgroundColor: "#eee", flex: 1 }}>
       <RepositoryListContainer
         repositories={repositories}
         method={sortMethod}
@@ -101,6 +135,7 @@ const RepositoryList = () => {
         searchBarText={searchQuery}
         searchBarOnChange={onChangeSearch}
         history={history}
+        onEndReached={onEndReach}
       />
     </View>
   );
